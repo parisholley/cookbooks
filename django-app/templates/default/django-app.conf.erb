@@ -1,0 +1,27 @@
+Listen 8080
+
+#fixes serving of images
+EnableSendfile off
+
+<VirtualHost *:8080>
+        DocumentRoot <%= @node[:vagrant][:directory] %>/www
+
+        <Directory <%= @node[:vagrant][:directory] %>/www>
+                AllowOverride All
+        </Directory>
+	
+        Alias /admin_media /usr/local/lib/python2.6/dist-packages/django/contrib/admin/media
+
+        <Location />
+                SetHandler python-program
+		PythonHandler django.core.handlers.modpython
+		PythonDebug On
+		PythonAutoReload On
+		PythonPath "['<%= @node[:vagrant][:directory] %>/www/'] + sys.path"
+		SetEnv DJANGO_SETTINGS_MODULE settings
+	</Location>
+
+	<Location /admin_media>
+		SetHandler None
+	</Location>	
+</VirtualHost>

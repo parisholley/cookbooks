@@ -1,0 +1,12 @@
+Listen 8080
+
+#fixes serving of images
+EnableSendfile off
+
+<VirtualHost *:8080>
+        DocumentRoot <%= @node[:vagrant][:directory] %>/www
+
+        <Directory <%= @node[:vagrant][:directory] %>/www>
+                AllowOverride All
+        </Directory>
+</VirtualHost>
