@@ -1,5 +1,7 @@
 require_recipe "apt"
 require_recipe "apache2"
+require_recipe "apache2::mod_rewrite"
+require_recipe "apache2::mod_proxy"
 
 require_recipe "php::module_apc"
 require_recipe "php::module_mysql"

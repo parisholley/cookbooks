@@ -1,0 +1,9 @@
+<VirtualHost *:80>
+	DocumentRoot <%= node['wordpress']['dir'] %>
+
+	<Directory <%= node['wordpress']['dir'] %>>
+		AllowOverride All
+	</Directory>
+</VirtualHost>
+
+Include /vagrant/conf.d/*_.conf 
