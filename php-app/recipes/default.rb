@@ -12,12 +12,31 @@ require_recipe "php::module_mcrypt"
 
 require_recipe "mysql::server"
 
+
+if File.exists?("#{node['vagrant']['directory']}/etc/hosts")
+        execute "/etc/hosts" do
+                command "cp #{node['vagrant']['directory']}/etc/hosts /etc/hosts"
+                action :run    
+        end 
+end
+
+if File.exists?("#{node['vagrant']['directory']}/dump.sql")
+        execute "create-database" do
+                command "mysql -uroot -p#{node['mysql']['server_root_password']} -e \"create database #{node['mysql']['database']}\""
+                action :run    
+        end 
+
+        execute "create-tables" do
+                command "mysql -uroot -p#{node['mysql']['server_root_password']} #{node['mysql']['database']} < #{node['vagrant']['directory']}/dump.sql"
+        end 
+end
+
 execute "disable-default-site" do
-	command "sudo a2dissite default"
-	notifies :reload, resources(:service => "apache2"), :delayed
+        command "sudo a2dissite default"
+        notifies :reload, resources(:service => "apache2"), :delayed
 end
 
 web_app "php-app" do
-	template "php-app.conf.erb"
-	notifies :reload, resources(:service => "apache2"), :delayed
+        template "php-app.conf.erb"
+        notifies :reload, resources(:service => "apache2"), :delayed
 end
