@@ -20,12 +20,12 @@ if File.exists?("#{node['vagrant']['directory']}/etc/hosts")
         end 
 end
 
+execute "create-database" do
+        command "mysql -uroot -p#{node['mysql']['server_root_password']} -e \"create database #{node['mysql']['database']}\""
+        action :run    
+end 
+        
 if File.exists?("#{node['vagrant']['directory']}/dump.sql")
-        execute "create-database" do
-                command "mysql -uroot -p#{node['mysql']['server_root_password']} -e \"create database #{node['mysql']['database']}\""
-                action :run    
-        end 
-
         execute "create-tables" do
                 command "mysql -uroot -p#{node['mysql']['server_root_password']} #{node['mysql']['database']} < #{node['vagrant']['directory']}/dump.sql"
         end 
