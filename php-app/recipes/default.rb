@@ -1,17 +1,16 @@
-require_recipe "apt"
-require_recipe "apache2"
-require_recipe "apache2::mod_rewrite"
-require_recipe "apache2::mod_proxy"
-require_recipe "apache2::mod_proxy_http"
+include_recipe "apt"
+include_recipe "apache2"
+include_recipe "apache2::mod_rewrite"
+include_recipe "apache2::mod_proxy"
+include_recipe "apache2::mod_proxy_http"
 
-require_recipe "php::module_apc"
-require_recipe "php::module_mysql"
-require_recipe "php::module_curl"
-require_recipe "php::module_gd"
-require_recipe "php::module_mcrypt"
+include_recipe "php::module_apc"
+include_recipe "php::module_mysql"
+include_recipe "php::module_curl"
+include_recipe "php::module_gd"
+include_recipe "php::module_mcrypt"
 
-require_recipe "mysql::server"
-
+include_recipe "mysql::server"
 
 if File.exists?("#{node['vagrant']['directory']}/etc/hosts")
         execute "/etc/hosts" do
