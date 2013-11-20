@@ -10,6 +10,27 @@ include_recipe "php::module_curl"
 include_recipe "php::module_gd"
 include_recipe "php::module_mcrypt"
 
+
+# timing hack to avoid a race condition
+# https://github.com/xforty/vagrant-drupal/issues/11
+log "waiting for mysql to start..."
+slumber = 0
+until /running/.match(`service mysql status`)
+    service "mysql" do
+        action :start
+        ignore_failure true
+    end
+
+    delay = 0.01
+    sleep delay
+    slumber += delay
+
+    if slumber > 20 then
+        log "stopped waiting for mysql"
+        break
+    end
+end
+
 include_recipe "mysql::server"
 
 if File.exists?("#{node['vagrant']['directory']}/etc/hosts")
