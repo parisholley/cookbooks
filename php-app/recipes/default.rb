@@ -49,6 +49,21 @@ execute "create-database" do
     action :run
 end
 
+dumpfile = "dump.sql"
+if ENV.key?('DBVERSION') && ENV['DBVERSION']
+    dumpfile = "dump.v#{ENV['DBVERSION']}.sql"
+end
+
+log "using dumpfile: #{dumpfile}"
+
+if File.exists?("#{node['vagrant']['directory']}/#{dumpfile}")
+    execute "create-tables" do
+        command "mysql -u root -p#{node['mysql']['server_root_password']} #{node['mysql']['database']} < #{node['vagrant']['directory']}/#{dumpfile}"
+    end 
+end
+
+
+# configure apache
 execute "disable-default-site" do
     command "sudo a2dissite default"
     notifies :reload, resources(:service => "apache2"), :delayed
