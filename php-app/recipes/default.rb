@@ -33,13 +33,17 @@ end
 
 include_recipe "mysql::server"
 
+
+# hosts file
 if File.exists?("#{node['vagrant']['directory']}/etc/hosts")
-        execute "/etc/hosts" do
-                command "cp #{node['vagrant']['directory']}/etc/hosts /etc/hosts"
-                action :run    
-        end 
+    execute "/etc/hosts" do
+        command "cp #{node['vagrant']['directory']}/etc/hosts /etc/hosts"
+        action :run
+    end 
 end
 
+
+# set up the database
 execute "create-database" do
         command "mysql -uroot -p#{node['mysql']['server_root_password']} -e \"create database #{node['mysql']['database']}\""
         action :run    
@@ -52,11 +56,11 @@ if File.exists?("#{node['vagrant']['directory']}/dump.sql")
 end
 
 execute "disable-default-site" do
-        command "sudo a2dissite default"
-        notifies :reload, resources(:service => "apache2"), :delayed
+    command "sudo a2dissite default"
+    notifies :reload, resources(:service => "apache2"), :delayed
 end
 
 web_app "php-app" do
-        template "php-app.conf.erb"
-        notifies :reload, resources(:service => "apache2"), :delayed
+    template "php-app.conf.erb"
+    notifies :reload, resources(:service => "apache2"), :delayed
 end
