@@ -45,14 +45,8 @@ end
 
 # set up the database
 execute "create-database" do
-        command "mysql -uroot -p#{node['mysql']['server_root_password']} -e \"create database #{node['mysql']['database']}\""
-        action :run    
-end 
-        
-if File.exists?("#{node['vagrant']['directory']}/dump.sql")
-        execute "create-tables" do
-                command "mysql -uroot -p#{node['mysql']['server_root_password']} #{node['mysql']['database']} < #{node['vagrant']['directory']}/dump.sql"
-        end 
+    command "mysql -u root -p#{node['mysql']['server_root_password']} -e \"create database if not exists #{node['mysql']['database']}\""
+    action :run
 end
 
 execute "disable-default-site" do
